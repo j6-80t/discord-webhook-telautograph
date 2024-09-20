@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SendHook</title>
+</head>
+<body>
+
+    <div class="main">
+
+    <div class="box">
+   
+   
+    <label for="webhookUrl">WEBHOOK URL</label><br>
+    <input type="text" id="webhookUrl" name="webhookUrl" placeholder="웹훅 URL을 여기에 입력해주세요."> <br><button onclick="sendMessage()">Send Message</button> <button onclick="sendEmbed()">Send Embed</button> <br>
+    <br> <br> 
+    <label for="message">MESSAGE</label><br>
+    <textarea id="message" name="message" rows="4" cols="50" placeholder="전송할 메세지입력"></textarea><br>
+</div>
+<br> <br>
+
+<br> <br>
+<div class="box2">
+     
+      <label for="embedTitle">EMBED TITLE</label><br>
+      <input type="text" id="embedTitle" name="embedTitle" placeholder="임베드의 제목을 입력해주세요."><br>
+      <br><br>
+  
+    
+      <label for="embedDescription">EMBED DESCRIPTION</label><br>
+      <textarea id="embedDescription" name="embedDescription" rows="4" cols="50" placeholder="Enter the description for your embed"></textarea><br> <br>
+      
+      <label for="embedColor">EMBED COLOR</label><br> 
+
+      <input type="color" id="embedColor" name="embedColor" value="#00ff00"><br><br>
+      <label for="embedImage">EMBED IMAGE URL</label><br>
+        <input type="text" id="embedImage" name="embedImage" placeholder="이미지 URL을 입력해주세요."><br><br>
+      <small></small><br><br>
+    </div>
+   
+</div>
+
+<style>
+    body {
+       
+        color: white;
+        background-color: rgb(30, 30, 32);
+    }
+
+    h1 {
+       
+        text-align: center;
+    }
+
+    .main {
+        display: flex; 
+        margin-left: 350px;
+    }
+
+    input {
+        height:38px;
+        width: 500px;
+        color: rgb(180, 180, 180);
+        border: none;
+        background-color: rgb(43, 43, 46);
+        font-size: 30px;
+        border-radius: 10px;
+    }
+
+    textarea {
+        color: rgb(180, 180, 180);
+        border: none;
+        background-color: rgb(43, 43, 46);
+        font-size: 20px;
+        border-radius: 15px;
+    }
+
+    label {
+        
+        font-size: 30px;
+    }
+
+    button {
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-top: 20px;
+        cursor: pointer;
+        border: none;
+        color: white;
+        background-color: rgb(43, 43, 46);
+        font-size: 20px;
+        border-radius: 10px;
+        padding: 10px 20px;
+      
+    }
+
+    button:hover {
+        background-color: rgb(67, 67, 73);
+    }
+
+    img {
+        pointer-events: none;
+        border-radius: 25%;
+        height: 50px;
+        width: 50px;
+    }
+    
+    #spil {
+        color: rgb(115, 180, 148);
+        font-size: 20px;
+    }
+
+    .box2 {
+        margin-left: 100px;
+       margin-top: 100px;
+    }
+    .box {
+        margin-top: 100px;
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
+</style>
+
+
+
+    <script>
+       function sendMessage() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const message = document.getElementById('message').value;
+
+            if (!webhookUrl.trim()) {
+                alert('웹훅 URL을 입력해주세요.');
+                return;
+            }
+
+            const data = {
+                content: message
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('[SENDHOOK] 메세지 전송 실패');
+                }
+                alert('[SENDHOOK] 메세지 전송 완료!');
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+                alert('[SENDHOOK] 메세지 전송 실패');
+            });
+        }
+
+        function sendEmbed() {
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            const embedTitle = document.getElementById('embedTitle').value;
+            const embedDescription = document.getElementById('embedDescription').value;
+            const embedColor = document.getElementById('embedColor').value;
+            const embedImage = document.getElementById('embedImage').value;
+
+            if (!webhookUrl.trim()) {
+                alert('웹훅 URL을 입력해주세요.');
+                return;
+            }
+
+            if (!embedTitle.trim()) {
+                alert('임베드 제목을 입력해주세요.');
+                return;
+            }
+
+            if (!embedDescription.trim()) {
+                alert('임베드 설명을 입력해주세요.');
+                return;
+            }
+
+            const embed = {
+                title: embedTitle,
+                description: embedDescription,
+                color: parseInt(embedColor.replace('#', ''), 16), 
+                image: {
+                    url: embedImage
+                }
+            };
+
+            const data = {
+                embeds: [embed]
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('임베드 전송 실패');
+                }
+                alert('[SENDHOOK] 임베드 전송 완료!');
+            })
+            .catch(error => {
+                console.error('Error sending embed:', error);
+                alert('임베드 전송 실패');
+            });
+        }
+    </script>
+</body>
+</html>
